@@ -1,54 +1,60 @@
 import "./App.css";
-import Navbar from "./components/Navbar";
 import { Routes, Route, useLocation } from "react-router-dom";
-import ExpenseTracker from "./pages/DashBoard";
-import ChatWithAI from "./pages/AiChatBot";
-import AuthPage from "./pages/SignIn";
+import { useEffect, Suspense, lazy } from "react";
+
+import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { useEffect } from "react";
 import useAuthStore from "./store/authUserStore";
 
-function App() {
-   const getUserData = useAuthStore((s) => s.getUserData);
-   const authReady = useAuthStore((s) => s.authReady);
+// ✅ Lazy-loaded pages
+const AuthPage = lazy(() => import("./pages/SignIn"));
+const ExpenseTracker = lazy(() => import("./pages/DashBoard"));
+const ChatWithAI = lazy(() => import("./pages/AiChatBot"));
 
+function App() {
+  const getUserData = useAuthStore((s) => s.getUserData);
+  const authReady = useAuthStore((s) => s.authReady);
   const location = useLocation();
+
   useEffect(() => {
-    getUserData(); // ✅ auto fetch on mount
+    getUserData();
   }, []);
 
-  if (!authReady) return null; // ✅ prevent flicker
+  if (!authReady) return null;
 
-
-  // Hide navbar on login page
   const hideNavbar = location.pathname === "/login";
 
   return (
-    <div className="App">
+    <div>
       {!hideNavbar && <Navbar />}
 
-      <Routes>
-        <Route path="/login" element={<AuthPage />} />
+      {/* Suspense fallback loader */}
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path="/login" element={<AuthPage />} />
 
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <ExpenseTracker />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/chat"
-          element={
-            <ProtectedRoute>
-              <ChatWithAI />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <ExpenseTracker />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route path="*" element={<AuthPage />} />
-      </Routes>
+          <Route
+            path="/chat"
+            element={
+              <ProtectedRoute>
+                <ChatWithAI />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Fallback route */}
+          <Route path="*" element={<AuthPage />} />
+        </Routes>
+      </Suspense>
     </div>
   );
 }

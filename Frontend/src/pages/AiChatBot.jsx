@@ -159,209 +159,175 @@ export default function ChatWithAI() {
     }
   };
 
-  return (
-    <div className="w-full bg-gray-200 min-h-screen px-4 md:px-2 lg:px-2 py-8 ">
-      <div className="flex rounded-md ">
-        {/* Main Chat Content */}
-        <main className="flex-1 flex flex-col m-h-[70vh] bg-white rounded-md">
-          {/* Chat Header */}
-          <div className="bg-white border-b border-gray-200 rounded-md">
-            <div className="bg-white px-2 py-2 sticky top-0 z-10">
-              <div className="flex items-center justify-between">
-                <button
-                  onClick={() => window.history.back()}
-                  className="flex items-center space-x-2 text-sm text-gray-700 hover:text-blue-600 bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-full transition"
-                >
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M15 19l-7-7 7-7"
-                    />
-                  </svg>
-                  <span>Back</span>
-                </button>
+ return (
+  <div className="w-full bg-gray-200 dark:bg-gray-900 min-h-screen px-4 md:px-2 lg:px-2 py-8">
+    <div className="flex rounded-md">
+      {/* Main Chat Content */}
+      <main className="flex-1 flex flex-col m-h-[70vh] bg-white dark:bg-gray-800 rounded-md">
+        {/* Chat Header */}
+        <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 rounded-md">
+          <div className="bg-white dark:bg-gray-800 px-2 py-2 sticky top-0 z-10">
+            <div className="flex items-center justify-between">
+              <button
+                onClick={() => window.history.back()}
+                className="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 px-3 py-2 rounded-full transition"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+                <span>Back</span>
+              </button>
 
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                    <SparklesIcon className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-semibold text-gray-900">
-                      AI Financial Assistant
-                    </h2>
-                    <p className="text-sm text-gray-500">
-                      Get personalized insights about your finances
-                    </p>
-                  </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                  <SparklesIcon className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">AI Financial Assistant</h2>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Get personalized insights about your finances</p>
                 </div>
               </div>
             </div>
           </div>
-          {/* Messages Container */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-6">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex ${
-                  message.type === "user" ? "justify-end" : "justify-start"
-                }`}
-              >
-                <div
-                  className={`max-w-3xl ${
-                    message.type === "user" ? "order-2" : "order-1"
-                  }`}
-                >
-                  <div className="flex items-start space-x-3">
-                    {message.type === "ai" && (
-                      <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center flex-shrink-0">
-                        <SparklesIcon className="w-4 h-4 text-white" />
-                      </div>
-                    )}
-                    <div
-                      className={`rounded-2xl px-4 py-3 ${
-                        message.type === "user"
-                          ? "bg-blue-600 text-white"
-                          : "bg-white border border-gray-200 text-gray-900"
-                      }`}
-                    >
-                      <div className="whitespace-pre-wrap text-sm leading-relaxed">
-                        {message.content}
-                      </div>
-                      <div className="text-xs opacity-70 mt-2">
-                        {message.timestamp.toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </div>
-                    </div>
-                    {message.type === "user" && (
-                      <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
-                        <UserIcon className="w-4 h-4 text-white" />
-                      </div>
-                    )}
-                  </div>
+        </div>
 
-                  {/* AI Suggestions */}
-                  {message.type === "ai" && message.suggestions && (
-                    <div className="mt-4 ml-11">
-                      <p className="text-xs text-gray-500 mb-2">
-                        Suggested questions:
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {message.suggestions.map((suggestion, index) => (
-                          <button
-                            key={index}
-                            onClick={() => handleSuggestionClick(suggestion)}
-                            className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-full transition-colors"
-                          >
-                            {suggestion}
-                          </button>
-                        ))}
-                      </div>
+        {/* Messages Container */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          {messages.map((message) => (
+            <div key={message.id} className={`flex ${message.type === "user" ? "justify-end" : "justify-start"}`}>
+              <div className={`max-w-3xl ${message.type === "user" ? "order-2" : "order-1"}`}>
+                <div className="flex items-start space-x-3">
+                  {message.type === "ai" && (
+                    <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center flex-shrink-0">
+                      <SparklesIcon className="w-4 h-4 text-white" />
+                    </div>
+                  )}
+                  <div
+                    className={`rounded-2xl px-4 py-3 ${
+                      message.type === "user"
+                        ? "bg-blue-600 text-white"
+                        : "bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                    }`}
+                  >
+                    <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                      {message.content}
+                    </div>
+                    <div className="text-xs opacity-70 mt-2 text-gray-500 dark:text-gray-400">
+                      {message.timestamp.toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </div>
+                  </div>
+                  {message.type === "user" && (
+                    <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                      <UserIcon className="w-4 h-4 text-white" />
                     </div>
                   )}
                 </div>
-              </div>
-            ))}
 
-            {/* Typing Indicator */}
-            {isTyping && (
-              <div className="flex justify-start">
-                <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                    <SparklesIcon className="w-4 h-4 text-white" />
-                  </div>
-                  <div className="bg-white border border-gray-200 rounded-2xl px-4 py-3">
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                      <div
-                        className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                        style={{ animationDelay: "0.1s" }}
-                      ></div>
-                      <div
-                        className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                        style={{ animationDelay: "0.2s" }}
-                      ></div>
+                {/* AI Suggestions */}
+                {message.type === "ai" && message.suggestions && (
+                  <div className="mt-4 ml-11">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Suggested questions:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {message.suggestions.map((suggestion, index) => (
+                        <button
+                          key={index}
+                          onClick={() => handleSuggestionClick(suggestion)}
+                          className="text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-full transition-colors"
+                        >
+                          {suggestion}
+                        </button>
+                      ))}
                     </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+
+          {/* Typing Indicator */}
+          {isTyping && (
+            <div className="flex justify-start">
+              <div className="flex items-start space-x-3">
+                <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                  <SparklesIcon className="w-4 h-4 text-white" />
+                </div>
+                <div className="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-2xl px-4 py-3">
+                  <div className="flex space-x-1">
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
                   </div>
                 </div>
               </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
 
-          {/* Quick Actions */}
-          <div className="bg-white border-t border-gray-200 px-6 py-3">
-            <div className="flex items-center space-x-2 mb-3">
-              <LightBulbIcon className="w-4 h-4 text-yellow-500" />
-              <span className="text-xs text-gray-600">Quick actions:</span>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() =>
-                  handleSuggestionClick("Analyze my spending patterns")
-                }
-                className="flex items-center space-x-2 text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-2 rounded-lg transition-colors"
-              >
-                <ChartBarIcon className="w-4 h-4" />
-                <span>Analyze Spending</span>
-              </button>
-              <button
-                onClick={() =>
-                  handleSuggestionClick("How can I reduce my expenses?")
-                }
-                className="flex items-center space-x-2 text-xs bg-green-50 hover:bg-green-100 text-green-700 px-3 py-2 rounded-lg transition-colors"
-              >
-                <ExclamationTriangleIcon className="w-4 h-4" />
-                <span>Reduce Expenses</span>
-              </button>
-              <button
-                onClick={() => handleSuggestionClick("Create a monthly budget")}
-                className="flex items-center space-x-2 text-xs bg-purple-50 hover:bg-purple-100 text-purple-700 px-3 py-2 rounded-lg transition-colors"
-              >
-                <ClipboardDocumentListIcon className="w-4 h-4" />
-                <span>Create Budget</span>
-              </button>
-            </div>
+        {/* Quick Actions */}
+        <div className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-6 py-3">
+          <div className="flex items-center space-x-2 mb-3">
+            <LightBulbIcon className="w-4 h-4 text-yellow-500" />
+            <span className="text-xs text-gray-600 dark:text-gray-400">Quick actions:</span>
           </div>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => handleSuggestionClick("Analyze my spending patterns")}
+              className="flex items-center space-x-2 text-xs bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-800 text-blue-700 dark:text-blue-300 px-3 py-2 rounded-lg transition-colors"
+            >
+              <ChartBarIcon className="w-4 h-4" />
+              <span>Analyze Spending</span>
+            </button>
+            <button
+              onClick={() => handleSuggestionClick("How can I reduce my expenses?")}
+              className="flex items-center space-x-2 text-xs bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-800 text-green-700 dark:text-green-300 px-3 py-2 rounded-lg transition-colors"
+            >
+              <ExclamationTriangleIcon className="w-4 h-4" />
+              <span>Reduce Expenses</span>
+            </button>
+            <button
+              onClick={() => handleSuggestionClick("Create a monthly budget")}
+              className="flex items-center space-x-2 text-xs bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-800 text-purple-700 dark:text-purple-300 px-3 py-2 rounded-lg transition-colors"
+            >
+              <ClipboardDocumentListIcon className="w-4 h-4" />
+              <span>Create Budget</span>
+            </button>
+          </div>
+        </div>
 
-          {/* Input Area */}
-          <div className="bg-white border-t border-gray-200 px-6 py-4">
-            <div className="flex items-center space-x-4">
-              <div className="flex-1 relative">
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={inputMessage}
-                  onChange={(e) => setInputMessage(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Ask me about your expenses, budgeting, or financial goals..."
-                  className="w-full border border-gray-300 rounded-xl px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  disabled={isTyping}
-                />
-                <button
-                  onClick={() => handleSendMessage(inputMessage)}
-                  disabled={!inputMessage.trim() || isTyping}
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 text-blue-600 hover:text-blue-700 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
-                >
-                  <PaperAirplaneIcon className="w-5 h-5" />
-                </button>
-              </div>
+        {/* Input Area */}
+        <div className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-6 py-4">
+          <div className="flex items-center space-x-4">
+            <div className="flex-1 relative">
+              <input
+                ref={inputRef}
+                type="text"
+                value={inputMessage}
+                onChange={(e) => setInputMessage(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Ask me about your expenses, budgeting, or financial goals..."
+                className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 rounded-xl px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                disabled={isTyping}
+              />
+              <button
+                onClick={() => handleSendMessage(inputMessage)}
+                disabled={!inputMessage.trim() || isTyping}
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 disabled:text-gray-400 dark:disabled:text-gray-600 disabled:cursor-not-allowed transition-colors"
+              >
+                <PaperAirplaneIcon className="w-5 h-5" />
+              </button>
             </div>
-            <p className="text-xs text-gray-500 mt-2">
-              💡 Try asking: "How much did I spend on food this month?" or "Give
-              me tips to save money"
-            </p>
           </div>
-        </main>
-      </div>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+            💡 Try asking: "How much did I spend on food this month?" or "Give me tips to save money"
+          </p>
+        </div>
+      </main>
     </div>
-  );
+  </div>
+);
+
 }
