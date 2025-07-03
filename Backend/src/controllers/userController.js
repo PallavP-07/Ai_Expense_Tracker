@@ -21,7 +21,7 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    const user = await CreateUserSchema.create({ uname, email, password });
+    const user = await CreateUserSchema.create({fullname, uname, email, password });
     res.status(201).json({
       message: "User registered",
       token: generateToken(user._id),

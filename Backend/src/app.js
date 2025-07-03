@@ -7,11 +7,18 @@ import userRoutes from "./routes/userRouter.js";
 const app = express();
 
 app.use(helmet());
-app.use(cors({ origin: process.env.CORS_ORIGIN || "*" }));
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(morgan("combined"));
-app.use("/api/users", userRoutes);
-app.get('/', (req, res) => {
+
+app.use("/api/v1/users", userRoutes);
+
+app.get("/", (req, res) => {
   res.send("server is running fine");
 });
 

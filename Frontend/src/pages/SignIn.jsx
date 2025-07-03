@@ -1,14 +1,26 @@
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
+import useAuthStore from "../store/authUserStore";
+import { useNavigate } from "react-router-dom";
+import LOGO from "../assets/logo.png";
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
-    Fname: "",
+    fullname: "",
+    username: "",
     email: "",
     password: "",
   });
   const [errors, setErrors] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
+  const login = useAuthStore((s) => s.login);
+  const register = useAuthStore((s) => s.register);
+  const { token, loading } = useAuthStore();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (token) {
+      navigate("/dashboard");
+    }
+  }, [token, navigate]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -45,16 +57,11 @@ export default function AuthPage() {
 
     // Signup specific validations
     if (!isLogin) {
-      if (!formData.firstName) {
-        newErrors.firstName = "First name is required";
+      if (!formData.fullname) {
+        newErrors.fullname = "Full Name is required";
       }
-      if (!formData.lastName) {
-        newErrors.lastName = "Last name is required";
-      }
-      if (!formData.confirmPassword) {
-        newErrors.confirmPassword = "Please confirm your password";
-      } else if (formData.password !== formData.confirmPassword) {
-        newErrors.confirmPassword = "Passwords do not match";
+      if (!formData.username) {
+        newErrors.username = "User Name is required";
       }
     }
 
@@ -64,31 +71,33 @@ export default function AuthPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    console.log(formData);
     if (!validateForm()) return;
-
-    setIsLoading(true);
-
-    // Simulate API call
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      console.log(isLogin ? "Login successful" : "Signup successful", formData);
-      // Handle successful auth here
+      if (isLogin) {
+        await login({ email: formData.email, password: formData.password });
+        navigate("/dashboard");
+        return;
+      }
+      await register({
+        fullname: formData.fullname,
+        uname: formData.username,
+        email: formData.email,
+        password: formData.password,
+      });
+      navigate("/dashboard");
     } catch (error) {
       console.error("Auth error:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const toggleMode = () => {
     setIsLogin(!isLogin);
     setFormData({
-      firstName: "",
-      lastName: "",
+      fullname: "",
+      username: "",
       email: "",
       password: "",
-      confirmPassword: "",
     });
     setErrors({});
   };
@@ -98,20 +107,8 @@ export default function AuthPage() {
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
-          <div className="mx-auto h-12 w-12 bg-indigo-600 rounded-full flex items-center justify-center mb-4">
-            <svg
-              className="h-6 w-6 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-              />
-            </svg>
+          <div className="mx-auto drop-shadow-lg w-16 p-3 bg-indigo-300 rounded-full flex items-center justify-center mb-4">
+            <img src={LOGO} alt="logo" className="w-full object-cover" />
           </div>
           <h2 className="text-3xl font-bold text-gray-900">
             {isLogin ? "Welcome back" : "Create your account"}
@@ -128,30 +125,56 @@ export default function AuthPage() {
           <form className="space-y-6" onSubmit={handleSubmit}>
             {/* Name fields for signup */}
             {!isLogin && (
-              <div className="grid grid-cols-1 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label
-                    htmlFor="firstName"
+                    htmlFor="fullname"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
                     Full Name
                   </label>
                   <input
-                    id="firstName"
-                    name="firstName"
+                    id="fullname"
+                    name="fullname"
                     type="text"
-                    value={formData.firstName}
+                    value={formData.fullname}
                     onChange={handleInputChange}
                     className={`w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors ${
-                      errors.firstName
+                      errors.fullname
                         ? "border-red-300 focus:ring-red-500 focus:border-red-500"
                         : "border-gray-300"
                     }`}
-                    placeholder="John"
+                    placeholder="John Deo"
                   />
-                  {errors.firstName && (
+                  {errors.fullname && (
                     <p className="mt-1 text-xs text-red-600">
-                      {errors.firstName}
+                      {errors.fullname}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <label
+                    htmlFor="username"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    User Name
+                  </label>
+                  <input
+                    id="username"
+                    name="username"
+                    type="text"
+                    value={formData.username}
+                    onChange={handleInputChange}
+                    className={`w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors ${
+                      errors.username
+                        ? "border-red-300 focus:ring-red-500 focus:border-red-500"
+                        : "border-gray-300"
+                    }`}
+                    placeholder="exp32"
+                  />
+                  {errors.username && (
+                    <p className="mt-1 text-xs text-red-600">
+                      {errors.username}
                     </p>
                   )}
                 </div>
@@ -240,10 +263,10 @@ export default function AuthPage() {
             {/* Submit button */}
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={loading}
               className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {isLoading ? (
+              {loading ? (
                 <div className="flex items-center">
                   <svg
                     className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
@@ -278,7 +301,7 @@ export default function AuthPage() {
           {/* Toggle between login/signup */}
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
+              {loading ? "Don't have an account?" : "Already have an account?"}{" "}
               <button
                 type="button"
                 onClick={toggleMode}

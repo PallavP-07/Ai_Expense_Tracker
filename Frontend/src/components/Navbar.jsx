@@ -1,12 +1,15 @@
-import { useState } from "react";
+import {useState } from "react";
 import LOGO from "../assets/logo.png";
 import {
   ChevronDownIcon,
   BellIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
+import useAuthStore from "../store/authUserStore";
+
 const Navbar = () => {
   const [showProfile, setShowProfile] = useState(false);
+  const { user,logout } = useAuthStore();
   return (
     <header className="bg-white shadow-lg ">
       <div className="flex items-center justify-between px-6 py-4">
@@ -17,7 +20,9 @@ const Navbar = () => {
           </div>
           <div>
             <h2 className="text-2xl font-bold text-gray-600">Expense Master</h2>
-            <p className="text-lg  text-gray-500">Manage your finance with Ai</p>
+            <p className="text-lg  text-gray-500">
+              Manage your finance with Ai
+            </p>
           </div>
         </div>
 
@@ -40,15 +45,17 @@ const Navbar = () => {
                 />
               </div>
               <div className="text-left hidden md:block">
-                <p className="text-sm font-medium text-gray-900">John Doe</p>
-                <p className="text-xs text-gray-500">john@example.com</p>
+                <p className="text-sm font-medium text-gray-900">
+                  {user?.fullname}
+                </p>
+                <p className="text-xs text-gray-500">{user?.email}</p>
               </div>
               <ChevronDownIcon className="w-4 h-4 text-gray-400" />
             </button>
 
             {/* Profile Dropdown Menu */}
             {showProfile && (
-              <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+              <div className="absolute right-0 mt-5 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
                 <div className="px-4 py-3 border-b border-gray-100">
                   <div className="flex items-center space-x-3">
                     <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center">
@@ -81,12 +88,12 @@ const Navbar = () => {
                     Help & Support
                   </a>
                   <hr className="my-2" />
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                  <button
+                    onClick={()=>logout()}
+                    className="block px-4 mx-2 my-2 rounded-md py-2 text-sm text-red-600 hover:bg-red-100"
                   >
                     Sign Out
-                  </a>
+                  </button>
                 </div>
               </div>
             )}
