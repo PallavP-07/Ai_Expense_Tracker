@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
 import CreateUserSchema from "../models/UserModel.js";
-
+import {sendWelcomeMail} from '../utils/sendMail.js'
 const generateToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
-    expiresIn: "7d",
+    expiresIn: "3d",
   });
 };
 
@@ -16,12 +16,13 @@ export const registerUser = async (req, res) => {
   }
 
   try {
-    const existing = await CreateUserSchema.findOne({ email });
+    const existing = await CreateUserSchema.findOne({ $or:[{email},{uname}] });
     if (existing) {
       return res.status(400).json({ message: "User already exists" });
     }
 
     const user = await CreateUserSchema.create({fullname, uname, email, password });
+     await sendWelcomeMail(email, fullname);
     res.status(201).json({
       message: "User registered",
       token: generateToken(user._id),
@@ -34,10 +35,10 @@ export const registerUser = async (req, res) => {
 
 // ✅ Login
 export const loginUser = async (req, res) => {
-  const { email, password } = req.body;
+  const { identifier, password } = req.body;
 
   try {
-    const user = await CreateUserSchema.findOne({ email });
+    const user = await CreateUserSchema.findOne({ $or:[{email:identifier},{uname:identifier}]});
     if (!user || !(await user.comparePassword(password))) {
       return res.status(401).json({ message: "Invalid credentials" });
     }

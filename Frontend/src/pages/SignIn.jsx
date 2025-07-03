@@ -6,6 +6,7 @@ export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     fullname: "",
+    identifier: "",
     username: "",
     email: "",
     password: "",
@@ -37,45 +38,56 @@ export default function AuthPage() {
     }
   };
 
-  const validateForm = () => {
-    const newErrors = {};
+const validateForm = () => {
+  const newErrors = {};
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-    } else if (!emailRegex.test(formData.email)) {
-      newErrors.email = "Please enter a valid email";
+  if (isLogin) {
+    // Login validations
+    if (!formData.identifier) {
+      newErrors.identifier = "Email or Username is required";
     }
 
-    // Password validation
     if (!formData.password) {
       newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
       newErrors.password = "Password must be at least 6 characters";
     }
 
-    // Signup specific validations
-    if (!isLogin) {
-      if (!formData.fullname) {
-        newErrors.fullname = "Full Name is required";
-      }
-      if (!formData.username) {
-        newErrors.username = "User Name is required";
-      }
+  } else {
+    // Register validations
+    if (!formData.fullname) {
+      newErrors.fullname = "Full Name is required";
     }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    if (!formData.username) {
+      newErrors.username = "User Name is required";
+    }
+
+    if (!formData.email) {
+      newErrors.email = "Email is required";
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = "Please enter a valid email";
+    }
+
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    } else if (formData.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
+    }
+  }
+
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
     if (!validateForm()) return;
     try {
       if (isLogin) {
-        await login({ email: formData.email, password: formData.password });
+        await login({ identifier: formData.identifier, password: formData.password });
         navigate("/dashboard");
         return;
       }
@@ -94,6 +106,7 @@ export default function AuthPage() {
   const toggleMode = () => {
     setIsLogin(!isLogin);
     setFormData({
+      identifier:"",
       fullname: "",
       username: "",
       email: "",
@@ -184,27 +197,26 @@ export default function AuthPage() {
             {/* Email field */}
             <div>
               <label
-                htmlFor="email"
+                htmlFor="identifier"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Email address
+                Email address or User Name
               </label>
               <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                value={formData.email}
+                id="identifier"
+                name="identifier"
+                type="text"
+                value={formData.identifier}
                 onChange={handleInputChange}
                 className={`w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors ${
-                  errors.email
+                  errors.identifier
                     ? "border-red-300 focus:ring-red-500 focus:border-red-500"
                     : "border-gray-300"
                 }`}
-                placeholder="john@example.com"
+                placeholder="email or user name"
               />
-              {errors.email && (
-                <p className="mt-1 text-xs text-red-600">{errors.email}</p>
+              {errors.identifier && (
+                <p className="mt-1 text-xs text-red-600">{errors.identifier}</p>
               )}
             </div>
 
