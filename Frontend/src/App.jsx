@@ -1,10 +1,9 @@
 import "./App.css";
-import ExpenseIncomeForm from "./components/CommonForm";
 import Navbar from "./components/Navbar";
 import { Routes, Route } from "react-router-dom";
-import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react";
 import ExpenseTracker from "./pages/DashBoard";
 import ChatWithAI from "./pages/AiChatBot";
+import AuthPage from "./pages/SignIn";
 
 function App() {
   return (
@@ -12,14 +11,8 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<ExpenseTracker />} />
-        <Route
-          path="/chat"
-          element={
-            <>
-              <ChatWithAI />
-            </>
-          }
-        />
+        <Route path="/login" element={<AuthPage />} />
+        <Route path="/chat" element={<ChatWithAI />} />
       </Routes>
     </div>
   );
